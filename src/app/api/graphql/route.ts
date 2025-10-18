@@ -7,5 +7,10 @@ const yoga = createYoga({
     fetchAPI: { Response: Response, Request: Request },
 });
 
-export const GET = yoga;
-export const POST = yoga;
+export async function GET(request: Request) {
+    return yoga(request);
+}
+
+export async function POST(request: Request) {
+    return yoga(request);
+}

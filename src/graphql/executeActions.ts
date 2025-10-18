@@ -38,13 +38,15 @@ export const actionHandlers: Record<
     ) => Promise<Record<string, any>>
 > = {
     mutation: async (action, context, execute) => {
+        if (action.type !== "mutation") {
+            throw new Error(`Expected mutation action, got ${action.type}`);
+        }
         const { mutation, inputMap } = action;
         const resolvedVars = inputMap ? resolveInputMap(inputMap, context) : {};
 
         let gqlQuery = "";
         let variablesToSend: Record<string, any> = {};
 
-        // Seleciona automaticamente o tipo da mutation conforme os campos resolvidos
         if ("id" in resolvedVars && "data" in resolvedVars) {
             gqlQuery = `mutation ${mutation}($id: ID!, $data: JSON!) {
         ${mutation}(id: $id, data: $data) { id data status }
@@ -66,17 +68,12 @@ export const actionHandlers: Record<
       }`;
             variablesToSend = { data: resolvedVars.data };
         }
-
         try {
             const data = await runGraphQL(gqlQuery, variablesToSend);
             const result = data?.[mutation];
             if (!result)
                 throw new Error(`GraphQL mutation '${mutation}' returned no data`);
-
             const newContext = { ...context, ...result };
-
-
-
             if (action.actions?.length) {
                 return execute(action.actions, newContext);
             }
@@ -88,6 +85,9 @@ export const actionHandlers: Record<
     },
 
     decision: async (action, context, execute) => {
+        if (action.type !== "decision") {
+            throw new Error(`Expected mutation action, got ${action.type}`);
+        }
         if (!action.cases) return context;
 
         for (const decisionCase of action.cases) {
@@ -103,6 +103,10 @@ export const actionHandlers: Record<
     },
 
     redirect: async (action, context) => {
+        if (action.type !== "redirect") {
+            throw new Error(`Expected mutation action, got ${action.type}`);
+        }
+
         const formType = context.formType || "auto"; // fallback
         const target = `/form/${formType}/${action.step}`;
 
@@ -116,6 +120,10 @@ export const actionHandlers: Record<
     },
 
     store: async (action, context) => {
+        if (action.type !== "store") {
+            throw new Error(`Expected mutation action, got ${action.type}`);
+        }
+
         const { key, from, storage = "cookies" } = action;
 
         const value = from.split(".").reduce((acc, part) => acc?.[part], context);
@@ -124,7 +132,11 @@ export const actionHandlers: Record<
             throw new Error(`store action: value for '${from}' not found in context`);
 
         if (storage === "cookies") {
-            Cookies.set(key, value, { path: "/" });
+            const stringValue =
+                typeof value === "string" || typeof value === "number" || typeof value === "boolean"
+                    ? value
+                    : JSON.stringify(value);
+            Cookies.set(key, stringValue, { path: "/" });
         } else {
             throw new Error(`Unsupported storage type: ${storage}`);
         }
