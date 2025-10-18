@@ -1,26 +1,101 @@
 @import "tailwindcss";
 
+/* === Design Tokens === */
+@theme {
+  --color-bg: light-dark(#ffffff, #0a0a0a);
+  --color-fg: light-dark(#171717, #ededed);
+  --color-primary: light-dark(#4f46e5, #6366f1);
+  --color-secondary: light-dark(#f9fafb, #1f2937);
+  --radius-lg: 1rem;
+}
+
+/* === Base styles === */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  color-scheme: light dark;
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-family: system-ui, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: linear-gradient(to bottom right,
+      light-dark(#f3f4f6, #111827),
+      light-dark(#e0e7ff, #1e1b4b));
+  padding: 2rem;
+}
+
+/* === Form container === */
+form {
+  background: var(--color-secondary);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 480px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* === Labels === */
+label {
+  font-weight: 600;
+  color: light-dark(#374151, #e5e7eb);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+/* === Inputs and selects === */
+input,
+select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid light-dark(#d1d5db, #374151);
+  background: light-dark(#fff, #111827);
+  color: var(--color-fg);
+  font-size: 0.95rem;
+  transition: all 0.2s ease-in-out;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary), transparent 70%);
+}
+
+/* === Buttons === */
+button {
+  background-color: var(--color-primary);
+  color: white;
+  font-weight: 600;
+  padding: 0.9rem 1.25rem;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: color-mix(in srgb, var(--color-primary), black 10%);
+}
+
+/* === Headings === */
+h1,
+h2,
+h3 {
+  text-align: center;
+  color: var(--color-fg);
+  font-weight: 700;
+}
+
+h1 {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
 }
