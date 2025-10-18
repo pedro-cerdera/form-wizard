@@ -4,7 +4,7 @@ import { homeForm } from "@/forms/homeForm";
 import { FormConfig } from "@/types/form";
 
 async function getStepData(formType: string, stepId: string) {
-    const res = await fetch(`http://localhost:3000/api/form/${formType}/${stepId}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/form/${formType}/${stepId}`, {
         cache: "no-store"
     });
     if (!res.ok) throw new Error("Erro ao buscar o step");

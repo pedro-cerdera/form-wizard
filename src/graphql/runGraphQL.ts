@@ -1,5 +1,5 @@
 export async function runGraphQL<T = any>(query: string, variables?: Record<string, any>): Promise<T> {
-    const res = await fetch("/api/graphql", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/graphql`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query, variables }),
